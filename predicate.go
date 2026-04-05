@@ -49,6 +49,29 @@ func MinLen(n int) Predicate {
 	}
 }
 
+// OneOf returns a Predicate that fails if the value is not equal to one of the allowed values.
+// It panics if no allowed values are provided.
+func OneOf[T comparable](allowed ...T) Predicate {
+	if len(allowed) == 0 {
+		panic("OneOf: allowed values must not be empty")
+	}
+
+	return func(val any) error {
+		v, ok := val.(T)
+		if !ok {
+			return fmt.Errorf("expected %T, got %T", allowed[0], val)
+		}
+
+		for _, a := range allowed {
+			if v == a {
+				return nil
+			}
+		}
+
+		return fmt.Errorf("value %v is not one of the allowed values %v", val, allowed)
+	}
+}
+
 // MaxLen returns a Predicate that fails if the length of a string, slice, or map exceeds n.
 // It panics if n is negative.
 func MaxLen(n int) Predicate {

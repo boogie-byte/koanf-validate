@@ -63,6 +63,32 @@ func TestPredicates(t *testing.T) {
 			wantErr:   true,
 		},
 
+		// OneOf
+		{
+			name:      "OneOf_Match",
+			predicate: validate.OneOf("foo", "bar", "baz"),
+			value:     "bar",
+			wantErr:   false,
+		},
+		{
+			name:      "OneOf_No_Match",
+			predicate: validate.OneOf("foo", "bar", "baz"),
+			value:     "qux",
+			wantErr:   true,
+		},
+		{
+			name:      "OneOf_Type_Mismatch",
+			predicate: validate.OneOf("foo", "bar"),
+			value:     42,
+			wantErr:   true,
+		},
+		{
+			name:      "OneOf_Nil",
+			predicate: validate.OneOf("foo", "bar"),
+			value:     nil,
+			wantErr:   true,
+		},
+
 		// MaxLen
 		{
 			name:      "MaxLen_Pass",
@@ -94,6 +120,12 @@ func TestPredicates(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestOneOf_Empty_Panics(t *testing.T) {
+	require.Panics(t, func() {
+		validate.OneOf[string]()
+	})
 }
 
 func TestMinLen_Negative_Panics(t *testing.T) {
