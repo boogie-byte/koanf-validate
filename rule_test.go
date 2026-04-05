@@ -29,7 +29,7 @@ func TestRuleSpec_Apply(t *testing.T) {
 			"foo.bar": "val1",
 		})
 
-		rule := validate.Rule("foo.bar", validate.Required())
+		rule := validate.Rule("foo.bar", validate.Required)
 		errs := rule.Apply(k)
 
 		require.Empty(t, errs)
@@ -38,7 +38,7 @@ func TestRuleSpec_Apply(t *testing.T) {
 	t.Run("Predicate_Fail", func(t *testing.T) {
 		k := newKoanf(t, map[string]any{})
 
-		rule := validate.Rule("foo.bar", validate.Required())
+		rule := validate.Rule("foo.bar", validate.Required)
 		errs := rule.Apply(k)
 
 		require.Len(t, errs, 1)
@@ -55,7 +55,7 @@ func TestRuleSpec_Apply(t *testing.T) {
 		errCustom := errors.New("custom error")
 		alwaysFail := func(val any) error { return errCustom }
 
-		rule := validate.Rule("foo.bar", validate.Required(), alwaysFail)
+		rule := validate.Rule("foo.bar", validate.Required, alwaysFail)
 		errs := rule.Apply(k)
 
 		require.Len(t, errs, 2)

@@ -31,13 +31,13 @@ func TestKova(t *testing.T) {
 	}{
 		{
 			name:        "Required_Present",
-			predicate:   validate.Required(),
+			predicate:   validate.Required,
 			vaule:       "foo",
 			expectedErr: nil,
 		},
 		{
 			name:        "Required_Missing",
-			predicate:   validate.Required(),
+			predicate:   validate.Required,
 			vaule:       nil,
 			expectedErr: validate.ErrMissingRequiredField,
 		},

@@ -32,8 +32,8 @@ func TestValidate(t *testing.T) {
 		})
 
 		errs := validate.Validate(k,
-			validate.Rule("foo.bar", validate.Required()),
-			validate.Rule("foo.baz", validate.Required()),
+			validate.Rule("foo.bar", validate.Required),
+			validate.Rule("foo.baz", validate.Required),
 		)
 
 		require.Empty(t, errs)
@@ -45,8 +45,8 @@ func TestValidate(t *testing.T) {
 		})
 
 		errs := validate.Validate(k,
-			validate.Rule("foo.bar", validate.Required()),
-			validate.Rule("foo.baz", validate.Required()),
+			validate.Rule("foo.bar", validate.Required),
+			validate.Rule("foo.baz", validate.Required),
 		)
 
 		require.Len(t, errs, 1)
@@ -60,8 +60,8 @@ func TestValidate(t *testing.T) {
 		k := newKoanf(t, map[string]any{})
 
 		errs := validate.Validate(k,
-			validate.Rule("foo.bar", validate.Required()),
-			validate.Rule("foo.baz", validate.Required()),
+			validate.Rule("foo.bar", validate.Required),
+			validate.Rule("foo.baz", validate.Required),
 		)
 
 		require.Len(t, errs, 2)

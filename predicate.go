@@ -17,13 +17,11 @@ package validate
 // Predicate is a function that validates a configuration value, returning an error on failure.
 type Predicate func(val any) error
 
-// Required returns a Predicate that fails if the value is nil.
-func Required() Predicate {
-	return func(val any) error {
-		if val == nil {
-			return ErrMissingRequiredField
-		}
-
-		return nil
+// Required is a Predicate that fails if the value is nil.
+func Required(val any) error {
+	if val == nil {
+		return ErrMissingRequiredField
 	}
+
+	return nil
 }
