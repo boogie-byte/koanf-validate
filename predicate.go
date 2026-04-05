@@ -14,6 +14,8 @@
 
 package validate
 
+import "fmt"
+
 // Predicate is a function that validates a configuration value, returning an error on failure.
 type Predicate func(val any) error
 
@@ -24,4 +26,46 @@ func Required(val any) error {
 	}
 
 	return nil
+}
+
+// MinLen returns a Predicate that fails if the length of a string, slice, or map is less than n.
+// It panics if n is negative.
+func MinLen(n int) Predicate {
+	if n < 0 {
+		panic("MinLen: n must not be negative")
+	}
+
+	return func(val any) error {
+		l, err := lenOf(val)
+		if err != nil {
+			return err
+		}
+
+		if l < n {
+			return fmt.Errorf("length %d is less than minimum %d", l, n)
+		}
+
+		return nil
+	}
+}
+
+// MaxLen returns a Predicate that fails if the length of a string, slice, or map exceeds n.
+// It panics if n is negative.
+func MaxLen(n int) Predicate {
+	if n < 0 {
+		panic("MaxLen: n must not be negative")
+	}
+
+	return func(val any) error {
+		l, err := lenOf(val)
+		if err != nil {
+			return err
+		}
+
+		if l > n {
+			return fmt.Errorf("length %d exceeds maximum %d", l, n)
+		}
+
+		return nil
+	}
 }

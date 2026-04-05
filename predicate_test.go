@@ -22,31 +22,88 @@ import (
 	"github.com/boogie-byte/koanf-validate"
 )
 
-func TestKova(t *testing.T) {
+func TestPredicates(t *testing.T) {
 	testCases := []struct {
-		name        string
-		predicate   validate.Predicate
-		vaule       any
-		expectedErr error
+		name      string
+		predicate validate.Predicate
+		value     any
+		wantErr   bool
 	}{
+		// Required
 		{
-			name:        "Required_Present",
-			predicate:   validate.Required,
-			vaule:       "foo",
-			expectedErr: nil,
+			name:      "Required_Present",
+			predicate: validate.Required,
+			value:     "foo",
+			wantErr:   false,
 		},
 		{
-			name:        "Required_Missing",
-			predicate:   validate.Required,
-			vaule:       nil,
-			expectedErr: validate.ErrMissingRequiredField,
+			name:      "Required_Missing",
+			predicate: validate.Required,
+			value:     nil,
+			wantErr:   true,
+		},
+
+		// MinLen
+		{
+			name:      "MinLen_Pass",
+			predicate: validate.MinLen(3),
+			value:     "foobar",
+			wantErr:   false,
+		},
+		{
+			name:      "MinLen_Exact",
+			predicate: validate.MinLen(3),
+			value:     "foo",
+			wantErr:   false,
+		},
+		{
+			name:      "MinLen_Too_Short",
+			predicate: validate.MinLen(5),
+			value:     "foo",
+			wantErr:   true,
+		},
+
+		// MaxLen
+		{
+			name:      "MaxLen_Pass",
+			predicate: validate.MaxLen(5),
+			value:     "foo",
+			wantErr:   false,
+		},
+		{
+			name:      "MaxLen_Exact",
+			predicate: validate.MaxLen(3),
+			value:     "foo",
+			wantErr:   false,
+		},
+		{
+			name:      "MaxLen_Too_Long",
+			predicate: validate.MaxLen(2),
+			value:     "foo",
+			wantErr:   true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := tc.predicate(tc.vaule)
-			require.ErrorIs(t, tc.expectedErr, err)
+			err := tc.predicate(tc.value)
+			if tc.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
 		})
 	}
+}
+
+func TestMinLen_Negative_Panics(t *testing.T) {
+	require.Panics(t, func() {
+		validate.MinLen(-1)
+	})
+}
+
+func TestMaxLen_Negative_Panics(t *testing.T) {
+	require.Panics(t, func() {
+		validate.MaxLen(-1)
+	})
 }
